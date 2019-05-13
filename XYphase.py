@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import math
 
 for BB_index in range(4):
-    prefix = 'BB' + `BB_index + 1`
-
-    XYCcom = np.load(prefix+'-SPW0-DA59.XYC.npy')
+    BBlist = 'BB' + `BB_index + 1`   
+    prefix = BBlist + '-SPW0-DA59'
+    XYCcom = np.load(prefix+'.XYC.npy')
     XYC = np.imag(XYCcom)
     Y= XYC[0,0:840]
-    X = np.load(prefix+'-SPW0-DA59.TS.npy')/86400 #sec(MJD)->day(MJD)
+    X = np.load(prefix+'.TS.npy')/86400 #sec(MJD)->day(MJD)
 
     #MJD->#Gregori
     n=X+678881
@@ -20,7 +20,7 @@ for BB_index in range(4):
     #print(y,m,d)
 
     plt.title('XYphase stability',)
-    plt.plot(d,Y,"ro" ,label=prefix)
+    plt.plot(d,Y,"ro" ,label=BBlist)
     plt.legend(loc='upper right')
     plt.xlabel("time")
     plt.ylabel("XY img")
