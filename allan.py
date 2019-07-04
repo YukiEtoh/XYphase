@@ -26,11 +26,11 @@ for BB_index in range(1):   #PutTheNumberOfBaseband
         a=np.array([  1,   10,  100, 1000],dtype=float)
         plt.loglog(a,a**(-2)*b,'k')
 
-    for lag in range(1,119):
+    for lag in range(1,118):
         plot()
-    for lag in range(121,239):
+    for lag in range(121,238):
         plot()
-    for lag in range(241,359):
+    for lag in range(241,358):
         plot()
     for lag in range(361,420):
         plot()
@@ -38,3 +38,8 @@ for BB_index in range(1):   #PutTheNumberOfBaseband
     plt.xlabel("time lag [s]")
     plt.ylabel("Allan variance")
 
+
+"""
+np.where(np.diff(TS) > 3.0)[0]
+
+"""
