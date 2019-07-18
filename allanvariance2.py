@@ -23,8 +23,6 @@ def AllanVar(t):
     y3=XYphase[t+2]
     return (y1-2*y2+y3)**2/2*2
 
-def Allan
-    
 
 def graph():
     X=time[i]-time[0]
