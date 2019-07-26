@@ -5,13 +5,13 @@ import matplotlib.dates as mdates
 from matplotlib import dates as mdates
 import math
 from datetime import datetime as dt
-time = np.load('BB1-SPW0-DA59.TS.npy')
-XYphase = np.imag(np.load('BB1-SPW0-DA59.XYC.npy'))[0,0:840]
-datasize=840
-def w(x,T):
-    deltaT1=np.round(time[x+T]-time[x])
-    deltaT2=np.round(time[x+2*T]-time[x+T])
-    if deltaT1 and deltaT2 == 2*T:
+MJDsec=np.load('BB1-SPW0-DA59.TS.npy')
+XYphase=np.imag(np.load('BB1-SPW0-DA59.XYC.npy'))[0,0:840]
+scanTotal=np.round(np.sum(MJDsec))
+def allanvar_conversion_counter(startPoint,timeDiff):
+    deltaT1=np.round(time[startPoint+timeDiff]-time[startPoint])
+    deltaT2=np.round(time[startPoint+2*timeDiff]-time[startPoint+timeDiff])
+    if deltaT1 and deltaT2 == 2*timeDiff:
        return 1
     else:
        return 0
@@ -32,7 +32,7 @@ def graph():
    # plt.loglog(a,-2+2b+a'k')
 
 
-for deltaT in range(1,datasize/3):
+for deltaT in range(1,4183211173150):
     total=0
     NumOfData=datasize/deltaT-2
     for i in range(1,NumOfData):  #始点の決定
