@@ -23,15 +23,15 @@ def Total_threePoints(startPoint,nextPoint):  #連続した3点を足し合わ�
     return (y3-y2-(y2-y1))**2
    
 def allanvar_graph(): #グラフをプロット
-    X=NP
+    X=NP*2
     Y=N/NP/2
     plt.loglog(X,Y,"ro",markersize=3)
     plt.title('G31.41+0_a_06_TE/Xb7d0ee BB1')
     plt.xlabel("time lag [s]")
     plt.ylabel("Allan variance")
-   # a=2
-   # b=0.0011488759243233671
-   # plt.loglog(a,-2+2b+a'k')
+    a=np.array([  2,   10,  100, 1000],dtype=float)
+    b=0.001134235480976836*4
+    plt.loglog(a,a**(-2)*b,'k')
 print("start point","next point","total of three point")
 
 for NP in range(1,838):  #次点の決定
@@ -42,11 +42,11 @@ for NP in range(1,838):  #次点の決定
         if allanvar_conversion_counter(SP,NP) == 1:
            #print(Total_threePoints(SP,NP))
            N+=Total_threePoints(SP,NP)
-           Allanvariance=(N/2)/2
+           Allanvariance=(N/NP*2)/2
           # print(SP,NP,N)
         else:
            pass
-    print(SP,NP,N,N/NP/2)
+#    print(SP,NP,N,N/NP/2)
        # print(SP,NP,N)
        # Allanvariance=(N/2)/2
     allanvar_graph()
