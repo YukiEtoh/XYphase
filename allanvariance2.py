@@ -5,48 +5,55 @@ import matplotlib.dates as mdates
 from matplotlib import dates as mdates
 import math
 from datetime import datetime as dt
-dataSize=840
-scanTime=np.load('BB1-SPW0-DA59.TS.npy')
-XYphase=np.imag(np.load('BB1-SPW0-DA59.XYC.npy'))[0,0:dataSize]
-scanTimeDiff=np.int(scanTime[dataSize-1]-scanTime[0])
-deltaTRange=np.int(scanTime[dataSize-1]-scanTime[0])/2
 
-def allanvar_conversion_counter(startPoint,nextPoint):   #連続した3点を取れたらカウントする関数
-    deltaT1=np.int(scanTime[startPoint+nextPoint*1]-scanTime[startPoint])
-    deltaT2=np.int(scanTime[startPoint+nextPoint*2]-scanTime[startPoint+nextPoint*1])
-    if deltaT1 == deltaT2 :
+timeStamp=np.load('BB1-SPW0-DA59.TS.npy')
+scaledTime = np.round((timeStamp-np.min(timeStamp))/np.min(np.diff(timeStamp)))  
+dataSize=len(timeStamp)
+XYphase=np.imag(np.load('BB1-SPW0-DA59.XYC.npy'))[0,0:dataSize]
+TotalScanTime=np.int(scaledTime[dataSize-1]-scaledTime[0])
+
+def allanvar_conversion_counter(startPoint,timeInterval):   #連続した3点を取れたらカウントする関数
+    nextPoint=np.where(np.round(scaledTime[startPoint]+timeInterval)==np.round(scaledTime))[0]
+    thirdPoint=np.where(np.round(scaledTime[startPoint]+timeInterval*2)==np.round(scaledTime))[0]
+    if nextPoint and thirdPoint :
        return 1
     else:
        return 0
-def Total_threePoints(startPoint,nextPoint):  #連続した3点を足し合わせる関数
-    vecSize=len(XYphase); y1=XYphase[startPoint]; y2=XYphase[startPoint+nextPoint*1]; y3=XYphase[startPoint+nextPoint*2]
-    return (y3-y2-(y2-y1))**2
-   
+
+def Total_threePoints(startPoint,timeInterval):  #連続した3点を足し合わせアラン分散を計算する関数
+    nextPoint=np.where(np.round(scaledTime[startPoint]+timeInterval)==np.round(scaledTime))[0]
+    thirdPoint=np.where(np.round(scaledTime[startPoint]+timeInterval*2)==np.round(scaledTime))[0]
+    y1=XYphase[startPoint]; y2=XYphase[int(nextPoint)]; y3=XYphase[int(thirdPoint)]
+    threePoints=(y3-2*y2-y1)**2
+    return threePoints
+    
+
 def allanvar_graph(): #グラフをプロット
-    X=NP*2
-    Y=N/NP/2
+    X=TI
+    Y=allan
     plt.loglog(X,Y,"ro",markersize=3)
     plt.title('G31.41+0_a_06_TE/Xb7d0ee BB1')
     plt.xlabel("time lag [s]")
     plt.ylabel("Allan variance")
     a=np.array([  2,   10,  100, 1000],dtype=float)
-    b=0.001134235480976836*4
+    b=5.8e-6
     plt.loglog(a,a**(-2)*b,'k')
-print("start point","next point","total of three point")
 
-for NP in range(1,838):  #次点の決定
-    N=0
-    R=838/NP 
-    for SP in range(1,R): #始点の決定
-        #print(SP)
-        if allanvar_conversion_counter(SP,NP) == 1:
-           #print(Total_threePoints(SP,NP))
-           N+=Total_threePoints(SP,NP)
-           Allanvariance=(N/NP*2)/2
-          # print(SP,NP,N)
-        else:
-           pass
-#    print(SP,NP,N,N/NP/2)
-       # print(SP,NP,N)
-       # Allanvariance=(N/2)/2
-    allanvar_graph()
+for TI in range(1,TotalScanTime):  #次点の決定
+          Total=0
+          N=0
+          for SP in range(1,dataSize-2): #始点の決定
+              if allanvar_conversion_counter(SP,TI) == 1:
+                 Total+=Total_threePoints(SP,TI)
+                 N+=allanvar_conversion_counter(SP,TI)
+             #    print(TI,Total,N,SP)
+              else:
+                 pass
+          if not N ==0:
+            # print(Total,N)   
+             allan=(Total/N/TI**2)/2
+             allanvar_graph()
+          else:
+             pass
+    
+
