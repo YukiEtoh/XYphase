@@ -30,7 +30,7 @@ def Total_threePoints(startPoint,timeInterval):  #連続した3点を足し合�
 
 def allanvar_graph(): #グラフをプロット
     X=TI
-    Y=allan
+    Y=allanvariance
     plt.loglog(X,Y,"ro",markersize=3)
     plt.title('G31.41+0_a_06_TE/Xb7d0ee BB1')
     plt.xlabel("time lag [s]")
@@ -50,8 +50,8 @@ for TI in range(1,TotalScanTime):  #次点の決定
               else:
                  pass
           if not N ==0:
-            # print(Total,N)   
-             allan=(Total/N/TI**2)/2
+             allanvariance=(Total/N/TI**2)/2
+             print(TI,SP,allanvariance) 
              allanvar_graph()
           else:
              pass
