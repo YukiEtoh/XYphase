@@ -5,21 +5,21 @@ import matplotlib.dates as mdates
 from matplotlib import dates as mdates
 import math
 from datetime import datetime as dt
-def allanvar_conversion_counter(startPoint, timeInterval, integerTimeCode):
+def allanvar_conversion_counter(startPoint, timeInterval, integerTimeCode):  #連続する第1点・2点・3点を返す
     nextPoint = np.where( integerTimeCode[startPoint] + timeInterval == integerTimeCode)[0]
     thirdPoint = np.where( integerTimeCode[startPoint] + timeInterval*2 == integerTimeCode)[0]
     return np.array([startPoint]), nextPoint, thirdPoint
 
-def threePointVar(timeIndex, measuredValue):  
+def threePointVar(timeIndex, measuredValue):  #連続する3点における計算値を返す
     return (measuredValue[timeIndex[0]] - 2*measuredValue[timeIndex[1]] + measuredValue[timeIndex[2]])**2
 
-def allanvar_graph(arranArray,timeInterval): #グラフをプロット
-    plt.loglog(timeInterval,arranArray,"ro",markersize=3)
+def allanvar_graph(arranVar,timeInterval): #グラフをプロット
+    plt.loglog(timeInterval,arranVar,"ro",markersize=3)
     plt.title('G31.41+0_a_06_TE/Xb7d0ee BB1')
     plt.xlabel("time lag [s]")
     plt.ylabel("Allan variance")
     a=np.array([  1,   10,  100, 1000, 10000],dtype=float)
-    b=5.8e-6
+    b=arranVar[0]
     plt.loglog(a,a**(-2)*b,'k')
 
 timeStamp=np.load('BB1-SPW0-DA59.TS.npy')
