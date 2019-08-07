@@ -15,11 +15,11 @@ def threePointVar(timeIndex, measuredValue):  #calculate three points
 def allanvar_graph(arranVar,timeInterval): #plot the graph
     if BB_index == 0:
        plt.loglog(timeInterval,arranVar,"ro",markersize=3)
-    elif BB_index == 0:
+    elif BB_index == 1:
        plt.loglog(timeInterval,arranVar,"bo",markersize=3)
-    elif BB_index == 0:
+    elif BB_index == 2:
        plt.loglog(timeInterval,arranVar,"go",markersize=3)
-    else:
+    elif BB_index == 3:
        plt.loglog(timeInterval,arranVar,"yo",markersize=3)
     plt.title('G31.41+0_a_06_TE/Xb7d0ee BB1')
     plt.xlabel("time lag [s]")
