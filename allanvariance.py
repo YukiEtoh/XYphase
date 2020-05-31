@@ -5,7 +5,8 @@ import matplotlib.dates as mdates
 from matplotlib import dates as mdates
 import math
 from datetime import datetime as dt
-
+FileTitle = 'G31.41+0_a_06_TE_Xb7d0ee_X63d5' #PutObjectAndSessionName!!!!!!DontUseSlash
+AntenaNumber='DA49' #PutUsedAntenaNumber!!!!!!DontUseSlash
 def allanvar_conversion_counter(startPoint, timeInterval, integerTimeCode):  #return consecutive threepoints
     nextPoint = np.where( integerTimeCode[startPoint] + timeInterval == integerTimeCode)[0]
     thirdPoint = np.where( integerTimeCode[startPoint] + timeInterval*2 == integerTimeCode)[0]
@@ -21,18 +22,18 @@ def allanvar_graph(arranVar,timeInterval,title): #plot the graph
        plt.loglog(timeInterval,arranVar,"go",markersize=3)
     elif BB_index == 3:
        plt.loglog(timeInterval,arranVar,"yo",markersize=3)
-    plt.title('FILENAME'+' '+title)
+    plt.title(FileTitle +' '+title)
     plt.xlabel("time lag [s]")
     plt.ylabel("Allan variance")
     a=np.array([  1,   10,  100, 1000, 10000],dtype=float)
     b=arranVar[0]
     plt.loglog(a,a**(-2)*b,'k')
-    plt.savefig('allanvariance_'+BBlist+'.png')
+    plt.savefig(FileTitle +' '+'allanvariance_'+BBlist+'.png')
     plt.close()
 
 for BB_index in range(4):   #PutTheNumberOfBaseband
     BBlist = 'BB' + `BB_index + 1`
-    prefix = BBlist +'-'+'SPW0-DA59'  #PutTheFileName
+    prefix = BBlist +'-'+'SPW0-'+AntenaNumber 
     timeStamp=np.load(prefix+'.TS.npy')
     scaledTime = np.round((timeStamp-np.min(timeStamp))/np.min(np.diff(timeStamp)))
     dataSize=len(timeStamp)
@@ -54,4 +55,3 @@ for BB_index in range(4):   #PutTheNumberOfBaseband
                  allanvarianceList = allanvarianceList + [allanvariance]
                  timeIntervalList = timeIntervalList + [TI]
     allanvar_graph(np.array(allanvarianceList), np.array(timeIntervalList),BBlist)
-
