@@ -18,11 +18,7 @@ def allanvar_conversion_counter(startPoint, timeInterval, integerTimeCode):  #re
 def threePointVar(timeIndex, measuredValue):  #calculate three points
     return (measuredValue[timeIndex[0]] - 2*measuredValue[timeIndex[1]] + measuredValue[timeIndex[2]])**2
 def allanvarhist(allanVar,Frequency):
-    plt.hist(allanVar,bins=10, range=None, normed=False, weights=None,
-                       cumulative=False, bottom=None, histtype='bar',
-                       align='mid', orientation='vertical', rwidth=None,
-                       log=True, color='b', label=None, stacked=False
-                       )
+    plt.hist(allanVar)
     #ax=plt.hist(allanVar, normed=False)
     #ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
     plt.savefig('Hist'+'.png')
@@ -51,5 +47,5 @@ for Session in range(1,2):
                  allanvariance=(Total/num_threePointVariance/TI**2)/2
                  allanvarianceList = allanvarianceList + [allanvariance]
                  timeIntervalList = timeIntervalList + [TI]
-allanvarhist(np.array(allanvarianceList),len(SessionList))
+allanvarhist(np.log10(allanvarianceList),len(SessionList))
 #    print(np.array(int(math.log10(allanvarianceList))),Session)
