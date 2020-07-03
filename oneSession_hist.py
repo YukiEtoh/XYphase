@@ -6,11 +6,11 @@ from matplotlib import dates as mdates
 import math
 from datetime import datetime as dt
 import glob
-
-SessionList=["Xb24884_X94f","Xb88fca_X10091","Xacbbd0_X132c","Xb7189f_Xa9cb","Xb8c0d3_X1053","Xb87877_X23c0","Xb945f7_X2f40","Xb903d6_X24ff","Xc20718_X3af7","Xc7111c_X8795","Xb9dfa4_X566e"]
-BaseBand='BB4'
-direc='/Users/etohyuki/Desktop/XYPhaseRecalibratedData/Band3'
-
+Band='Band6'
+SessionList=['Xb7d0ee_X63d5',  'Xc1fe31_X6fa',  'Xc1e2be_X39e9',  'Xad565b_X1ae7',  'Xb47876_X554d', 'Xb47876_Xae6',  'Xb48b38_X1219',  'Xb618c7_X5b22',  'Xb25e1a_X44d',  'Xb25e1a_Xb124',  'Xc079b5_X8b4',  'Xc1f4d6_X676',   'Xba839d_X2096',  'Xbe22c2_X2db0',  'Xbe5932_X1b25']
+BaseBand='BB1'
+direc='/Users/etohyuki/Desktop/XYPhaseRecalibratedData/'+Band+'/'
+Band='Band3'
 def allanvar_conversion_counter(startPoint, timeInterval, integerTimeCode):  #return consecutive threepoints
     nextPoint = np.where( integerTimeCode[startPoint] + timeInterval == integerTimeCode)[0]
     thirdPoint = np.where( integerTimeCode[startPoint] + timeInterval*2 == integerTimeCode)[0]
@@ -18,13 +18,14 @@ def allanvar_conversion_counter(startPoint, timeInterval, integerTimeCode):  #re
 def threePointVar(timeIndex, measuredValue):  #calculate three points
     return (measuredValue[timeIndex[0]] - 2*measuredValue[timeIndex[1]] + measuredValue[timeIndex[2]])**2
 def allanvarhist(allanVar,Frequency):
-    plt.hist(allanVar)
-    plt.savefig('HistAllanvarAllsessionBand3'+'.png')
+    plt.hist(allanVar,color='g')
+    plt.savefig('HistAllanvarAllsession_'+Band+'_'+BaseBand+'.png')
     plt.xlabel("AllanVariance_\sigma^2")
     plt.ylabel("Frequency_TotalData")
     plt.close()
-
-allanvarianceList, timeIntervalList = [], []
+def flatten(nested_list):
+    return [e for inner_list in nested_list for e in inner_list]
+allanvarianceList, timeIntervalList, allan_nomalizedList= [], [], []
 for Session in range(1,2):
     files=direc+SessionList[Session]+"/NPY/"
     timeStamp=np.load(glob.glob(files+BaseBand+'*'+'D'+'*TS.npy')[0])
@@ -44,7 +45,15 @@ for Session in range(1,2):
                      num_threePointVariance+=1
               if num_threePointVariance > 0:
                  allanvariance=(Total/num_threePointVariance/TI**2)/2
+                 allan_nomalized = allanvariance*TI**2
                  allanvarianceList = allanvarianceList + [allanvariance]
                  timeIntervalList = timeIntervalList + [TI]
-allanvarhist(np.log10(allanvarianceList),len(SessionList))
-#    print(np.array(int(math.log10(allanvarianceList))),Session)
+                 allan_nomalizedList = allan_nomalizedList + [allan_nomalized]
+    allan_time=[flatten(allan_nomalizedList),timeIntervalList]
+#print(allan_nomalizedList)
+allanvarhist(np.log10(allan_nomalizedList),len(SessionList))
+#    print(nptimeIntervalList.array(int(math.log10(allanvarianceList))),Session)
+
+
+
+#band3 2,215[s]
